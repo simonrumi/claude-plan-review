@@ -38,9 +38,10 @@ if command -v jq &>/dev/null && jq --version &>/dev/null 2>&1; then
   USE_JQ=1
 else
   USE_JQ=0
-  PYTHON_BIN=$(command -v python3 2>/dev/null || command -v python 2>/dev/null || true)
+  SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+  PYTHON_BIN=$(bash "$SCRIPT_DIR/find-python.sh")
   if [ -z "$PYTHON_BIN" ]; then
-    echo "ERROR: neither jq nor a working Python installation found" >&2
+    echo "ERROR: neither jq nor a working Python installation found (Windows Store alias stubs are detected and rejected, not just PATH lookups)" >&2
     exit 1
   fi
 fi

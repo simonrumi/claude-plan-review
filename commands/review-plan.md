@@ -876,8 +876,7 @@ For each section in `contested_sections`, collect the set of round numbers in wh
 
 Implement using inline Python:
 ```bash
-PYTHON_BIN=$(command -v python3 2>/dev/null || command -v python 2>/dev/null || true)
-if [ -z "$PYTHON_BIN" ]; then echo "ERROR: no python3/python found in PATH" >&2; exit 1; fi
+PYTHON_BIN=$(bash "$PLUGIN_ROOT/scripts/find-python.sh") || { echo "ERROR: no working python3/python found in PATH. If Python is installed but this still fails, check Windows Settings > Apps > Advanced app settings > App execution aliases and disable the python.exe/python3.exe Microsoft Store entries, or put a real python.org install earlier on PATH." >&2; exit 1; }
 SEMANTIC_CYCLE="$(CONTESTED_JSON='<contested_sections_json>' "$PYTHON_BIN" -c '
 import json, os
 contested = json.loads(os.environ["CONTESTED_JSON"])
@@ -902,10 +901,9 @@ Return `true` or `false`.
 
 All state writes follow this pattern. Never do partial field writes via shell `sed` or similar. Always read the full file, modify in memory, and write back.
 
-**Finding the Python binary:** On Windows, `which python` may be intercepted by the Microsoft Store alias and produce no output. Use:
+**Finding the Python binary:** On Windows, `command -v python` can find the Microsoft Store's app-execution-alias stub (a real file on PATH) and return its path even though running it does nothing useful — existence on PATH does not mean it works. Use:
 ```bash
-PYTHON_BIN=$(command -v python3 2>/dev/null || command -v python 2>/dev/null || true)
-if [ -z "$PYTHON_BIN" ]; then echo "ERROR: no python3/python found in PATH" >&2; exit 1; fi
+PYTHON_BIN=$(bash "$PLUGIN_ROOT/scripts/find-python.sh") || { echo "ERROR: no working python3/python found in PATH. If Python is installed but this still fails, check Windows Settings > Apps > Advanced app settings > App execution aliases and disable the python.exe/python3.exe Microsoft Store entries, or put a real python.org install earlier on PATH." >&2; exit 1; }
 ```
 
 **Standard state write (via Python temp file):**
@@ -913,8 +911,7 @@ if [ -z "$PYTHON_BIN" ]; then echo "ERROR: no python3/python found in PATH" >&2;
 **IMPORTANT:** Do NOT use inline `"$(...)"` substitution for Python state writes. The quoting required to pass JSON through shell variable expansion is fragile and will silently wipe the state file if Python fails. Always write the Python script to a temp file first, then execute it:
 
 ```bash
-PYTHON_BIN=$(command -v python3 2>/dev/null || command -v python 2>/dev/null || true)
-if [ -z "$PYTHON_BIN" ]; then echo "ERROR: no python3/python found in PATH" >&2; exit 1; fi
+PYTHON_BIN=$(bash "$PLUGIN_ROOT/scripts/find-python.sh") || { echo "ERROR: no working python3/python found in PATH. If Python is installed but this still fails, check Windows Settings > Apps > Advanced app settings > App execution aliases and disable the python.exe/python3.exe Microsoft Store entries, or put a real python.org install earlier on PATH." >&2; exit 1; }
 STATE_FILE_ABS="$PROJECT_ROOT/$STATE_FILE_REL"
 
 cat > /tmp/update_state_NNN.py << 'PYEOF'
