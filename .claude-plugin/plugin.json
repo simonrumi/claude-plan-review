@@ -4,6 +4,8 @@
   "version": "0.1.0",
   "description": "Dual-AI plan review loop: two sub-agents alternately review and improve a plan document until they converge or escalate to a human decision.",
   "author": { "name": "Simon Rumi", "email": "simonrumi@gmail.com" },
+  "homepage": "https://github.com/simonrumi/claude-plan-review",
+  "repository": "https://github.com/simonrumi/claude-plan-review",
   "license": "MIT",
   "keywords": ["plan-review", "multi-agent", "orchestration"]
 }
