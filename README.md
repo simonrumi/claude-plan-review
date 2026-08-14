@@ -15,8 +15,10 @@ The plugin expects (and will create) `plans/sessions/` and `documentation/` unde
 
 ## Install
 
+From within a Claude CLI session:
+
 ```
-/plugin marketplace add <path-or-owner/repo>
+/plugin marketplace add simonrumi/claude-plan-review
 /plugin install claude-plan-review@claude-plan-review
 ```
 
