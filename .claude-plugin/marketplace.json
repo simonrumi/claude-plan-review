@@ -3,6 +3,6 @@
   "owner": { "name": "Simon Rumi", "email": "simonrumi@gmail.com" },
   "description": "Self-hosted marketplace distributing the claude-plan-review plugin.",
   "plugins": [
-    { "name": "claude-plan-review", "source": "./", "description": "Dual-AI plan review loop orchestrator command.", "version": "0.1.1" }
+    { "name": "claude-plan-review", "source": "./", "description": "Dual-AI plan review loop orchestrator command.", "version": "0.1.2" }
   ]
 }

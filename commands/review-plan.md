@@ -21,8 +21,16 @@ if [ -z "$CPR_PROJECT_ROOT" ] || [ -z "$CPR_PLUGIN_ROOT" ]; then
   exit 1
 fi
 
-normalize_path() {
-  local p="$1"
+# Two inlined copies, not one shared function taking $1 — Claude Code's
+# slash-command argument substitution replaces literal "$1"/"$2"/etc. tokens
+# anywhere in this file's rendered text, including inside an ordinary bash
+# function's own positional parameter, before the model ever sees it (no
+# code-fence awareness, no documented escape). A shared normalize_path("$1")
+# function is exactly the shape that collides with that mechanism; closing
+# over each already-named variable directly removes the collision surface
+# entirely instead of trying to survive it.
+normalize_project_root() {
+  local p="$CPR_PROJECT_ROOT"
   # Regex must live in a variable, not inline in [[ =~ ]] — on some bash
   # builds (confirmed: Cygwin/MSYS 5.3.9) an inline [\\/] silently fails to
   # match a literal backslash. Same builds also mis-parse the parameter-
@@ -40,8 +48,21 @@ normalize_path() {
   fi
 }
 
-PROJECT_ROOT="$(normalize_path "$CPR_PROJECT_ROOT")"
-PLUGIN_ROOT="$(normalize_path "$CPR_PLUGIN_ROOT")"
+normalize_plugin_root() {
+  local p="$CPR_PLUGIN_ROOT"
+  local drive_re='^([A-Za-z]):[\\/](.*)$'
+  if [[ "$p" =~ $drive_re ]]; then
+    local drive="${BASH_REMATCH[1],,}"
+    local rest
+    rest="$(printf '%s' "${BASH_REMATCH[2]}" | tr '\\' '/' 2>/dev/null)"
+    printf '/%s/%s' "$drive" "$rest"
+  else
+    printf '%s' "$(printf '%s' "$p" | tr '\\' '/' 2>/dev/null)"
+  fi
+}
+
+PROJECT_ROOT="$(normalize_project_root)"
+PLUGIN_ROOT="$(normalize_plugin_root)"
 echo "PROJECT_ROOT=$PROJECT_ROOT"
 echo "PLUGIN_ROOT=$PLUGIN_ROOT"
 ```

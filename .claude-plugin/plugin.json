@@ -1,7 +1,7 @@
 {
   "name": "claude-plan-review",
   "displayName": "Claude Plan Review",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Dual-AI plan review loop: two sub-agents alternately review and improve a plan document until they converge or escalate to a human decision.",
   "author": { "name": "Simon Rumi", "email": "simonrumi@gmail.com" },
   "homepage": "https://github.com/simonrumi/claude-plan-review",
